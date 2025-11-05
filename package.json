@@ -6,7 +6,7 @@
   "main": "script.js",
   "scripts": {
     "dev": "vite",
-    "build": "npx vite build",
+    "build": "node ./node_modules/.bin/vite build",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
