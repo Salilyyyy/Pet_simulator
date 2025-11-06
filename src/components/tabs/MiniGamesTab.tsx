@@ -9,6 +9,7 @@ import PetWordPuzzleGame from '../games/PetWordPuzzleGame';
 import RockPaperScissorsGame from '../games/RockPaperScissorsGame';
 import TicTacToeGame from '../games/TicTacToeGame';
 import HangmanGame from '../games/HangmanGame';
+import BreakoutGame from '../games/BreakoutGame';
 
 const MiniGamesTab: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -87,6 +88,14 @@ const MiniGamesTab: React.FC = () => {
       cost: 13,
       description: 'Guess letters to save your pet from hanging!',
       component: HangmanGame
+    },
+    {
+      id: 'breakout',
+      name: 'Breakout',
+      icon: '🧱',
+      cost: 17,
+      description: 'Break all bricks with your ball!',
+      component: BreakoutGame
     }
   ];
 
