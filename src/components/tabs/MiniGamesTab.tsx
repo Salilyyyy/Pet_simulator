@@ -4,6 +4,9 @@ import PikachuMatchGame from '../games/PikachuMatchGame';
 import SnakeGame from '../games/SnakeGame';
 import FeedingFrenzyGame from '../games/FeedingFrenzyGame';
 import CatchGame from '../games/CatchGame';
+import PuzzleGame from '../games/PuzzleGame';
+
+import PetWordPuzzleGame from '../games/PetWordPuzzleGame';
 
 const MiniGamesTab: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -17,6 +20,23 @@ const MiniGamesTab: React.FC = () => {
       description: 'Match identical pet images to make them disappear!',
       component: PikachuMatchGame,
       featured: true
+    },
+
+    {
+      id: 'pet-word-puzzle',
+      name: 'Pet Word Puzzle',
+      icon: '📝',
+      cost: 16,
+      description: 'Find pet-related words by connecting letters!',
+      component: PetWordPuzzleGame
+    },
+    {
+      id: 'puzzle-game',
+      name: 'Block Puzzle',
+      icon: '🧩',
+      cost: 18,
+      description: 'Arrange falling blocks to complete horizontal lines!',
+      component: PuzzleGame
     },
     {
       id: 'snake-game',
