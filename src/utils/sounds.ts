@@ -101,38 +101,110 @@ class SoundManager {
   async startBackgroundMusic(): Promise<void> {
     if (this.isBackgroundPlaying) return;
 
-    this.backgroundMusic = new Audio('/background-music.mp3');
-    this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.3;
-
-    this.backgroundMusic.addEventListener('error', () => {
-      console.log('Background music file not found. Add background-music.mp3 to the public folder.');
-      this.isBackgroundPlaying = false;
-    });
-
+    // Try to load external music file first
     try {
+      this.backgroundMusic = new Audio('/background-music.mp3');
+      this.backgroundMusic.loop = true;
+      this.backgroundMusic.volume = 0.3;
+
       await this.backgroundMusic.play();
       this.isBackgroundPlaying = true;
-    } catch (error: any) {
-      if (error.name === 'NotAllowedError') {
-        console.log('Background music requires user interaction to start');
-      } else if (error.name === 'NotSupportedError') {
-        console.log('Background music file format not supported');
-      } else {
-        console.log('Error playing background music:', error);
-      }
-      this.isBackgroundPlaying = false;
-      throw error;
+      console.log('✅ Background music loaded from file!');
+      return;
+    } catch (error) {
+      console.log('📁 No music file found, generating chill background music...');
     }
+
+    // Fallback: Generate chill background music using Web Audio API
+    const context = this.initAudioContext();
+    if (!context) throw new Error('Audio context not available');
+
+    // Create a more musical, chill background composition
+    const gainNode = context.createGain();
+    gainNode.connect(context.destination);
+    gainNode.gain.setValueAtTime(0.15, context.currentTime);
+
+    // Main melody - soft piano-like notes
+    const melodyNotes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88]; // C4 to B4
+    let noteIndex = 0;
+
+    const playNextNote = () => {
+      if (!this.isBackgroundPlaying) return;
+
+      const oscillator = context.createOscillator();
+      const noteGain = context.createGain();
+
+      oscillator.connect(noteGain);
+      noteGain.connect(gainNode);
+
+      // Soft attack and release for natural sound
+      const currentNote = melodyNotes[noteIndex % melodyNotes.length];
+      oscillator.frequency.setValueAtTime(currentNote, context.currentTime);
+
+      // Piano-like sound with triangle wave
+      oscillator.type = 'triangle';
+
+      noteGain.gain.setValueAtTime(0, context.currentTime);
+      noteGain.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.1);
+      noteGain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 2);
+
+      oscillator.start(context.currentTime);
+      oscillator.stop(context.currentTime + 2);
+
+      noteIndex++;
+      // Play next note after 1.5 seconds for overlapping, chill effect
+      setTimeout(playNextNote, 1500);
+    };
+
+    // Add ambient pads for depth
+    const createAmbientPad = (frequency: number, delay: number) => {
+      setTimeout(() => {
+        if (!this.isBackgroundPlaying) return;
+
+        const oscillator = context.createOscillator();
+        const padGain = context.createGain();
+
+        oscillator.connect(padGain);
+        padGain.connect(gainNode);
+
+        oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+        oscillator.type = 'sine';
+
+        padGain.gain.setValueAtTime(0, context.currentTime);
+        padGain.gain.linearRampToValueAtTime(0.05, context.currentTime + 2);
+        // Slow fade for ambient feel
+        padGain.gain.exponentialRampToValueAtTime(0.02, context.currentTime + 8);
+
+        oscillator.start(context.currentTime);
+        oscillator.stop(context.currentTime + 8);
+      }, delay);
+    };
+
+    // Start the ambient pads
+    createAmbientPad(130.81, 0); // C3
+    createAmbientPad(164.81, 1000); // E3
+    createAmbientPad(196.00, 2000); // G3
+
+    // Start the melody
+    playNextNote();
+
+    this.isBackgroundPlaying = true;
+    console.log('🎵 Chill background music started! Add background-music.mp3 to public/ for real music.');
   }
 
   stopBackgroundMusic(): void {
-    if (!this.isBackgroundPlaying || !this.backgroundMusic) return;
+    if (!this.isBackgroundPlaying) return;
 
-    this.backgroundMusic.pause();
-    this.backgroundMusic.currentTime = 0;
-    this.backgroundMusic = null;
+    // Stop HTML5 Audio if it exists
+    if (this.backgroundMusic) {
+      this.backgroundMusic.pause();
+      this.backgroundMusic.currentTime = 0;
+      this.backgroundMusic = null;
+    }
+
+    // For generated music, just set the flag (oscillators will stop themselves)
     this.isBackgroundPlaying = false;
+    console.log('🎵 Background music stopped');
   }
 
   isBackgroundMusicPlaying(): boolean {
