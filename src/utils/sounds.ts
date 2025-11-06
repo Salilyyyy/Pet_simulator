@@ -1,7 +1,6 @@
 class SoundManager {
   private audioContext: AudioContext | null = null;
-  private backgroundMusic: OscillatorNode | null = null;
-  private backgroundGain: GainNode | null = null;
+  private backgroundMusic: HTMLAudioElement | null = null;
   private isBackgroundPlaying: boolean = false;
 
   private initAudioContext() {
@@ -102,60 +101,36 @@ class SoundManager {
   startBackgroundMusic(): void {
     if (this.isBackgroundPlaying) return;
 
-    const context = this.initAudioContext();
-    if (!context) return;
+    this.backgroundMusic = new Audio('/background-music.mp3');
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.3;
 
-    this.backgroundGain = context.createGain();
-    this.backgroundGain.connect(context.destination);
-    this.backgroundGain.gain.setValueAtTime(0.1, context.currentTime);
+    this.backgroundMusic.addEventListener('error', () => {
+      console.log('Background music file not found. Add background-music.mp3 to the public folder.');
+      this.isBackgroundPlaying = false;
+    });
 
-    const oscillator1 = context.createOscillator();
-    oscillator1.frequency.setValueAtTime(220, context.currentTime);
-    oscillator1.type = 'sine';
-    oscillator1.connect(this.backgroundGain);
-    oscillator1.start();
+    this.backgroundMusic.play().catch((error) => {
+      if (error.name === 'NotAllowedError') {
+        console.log('Background music requires user interaction to start');
+      } else if (error.name === 'NotSupportedError') {
+        console.log('Background music file format not supported');
+      } else {
+        console.log('Error playing background music:', error);
+      }
+      this.isBackgroundPlaying = false;
+    });
 
-    const oscillator2 = context.createOscillator();
-    oscillator2.frequency.setValueAtTime(330, context.currentTime);
-    oscillator2.type = 'sine';
-    oscillator2.connect(this.backgroundGain);
-    oscillator2.start();
-
-    const oscillator3 = context.createOscillator();
-    oscillator3.frequency.setValueAtTime(440, context.currentTime);
-    oscillator3.type = 'triangle';
-    oscillator3.connect(this.backgroundGain);
-    oscillator3.start();
-
-    const lfo = context.createOscillator();
-    lfo.frequency.setValueAtTime(0.1, context.currentTime);
-    const lfoGain = context.createGain();
-    lfoGain.gain.setValueAtTime(10, context.currentTime);
-    lfo.connect(lfoGain);
-    lfoGain.connect(oscillator1.frequency);
-    lfo.start();
-
-    this.backgroundMusic = oscillator1;
     this.isBackgroundPlaying = true;
   }
 
   stopBackgroundMusic(): void {
     if (!this.isBackgroundPlaying || !this.backgroundMusic) return;
 
-    const context = this.initAudioContext();
-    if (!context) return;
-
-    if (this.backgroundGain) {
-      this.backgroundGain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 1);
-    }
-
-    setTimeout(() => {
-      if (this.backgroundMusic) {
-        this.backgroundMusic.stop();
-        this.backgroundMusic = null;
-      }
-      this.isBackgroundPlaying = false;
-    }, 1000);
+    this.backgroundMusic.pause();
+    this.backgroundMusic.currentTime = 0;
+    this.backgroundMusic = null;
+    this.isBackgroundPlaying = false;
   }
 
   isBackgroundMusicPlaying(): boolean {

@@ -1,0 +1,14 @@
+PLACEHOLDER FILE - Replace with actual MP3
+
+This is a placeholder file. To add background music:
+
+1. Download chill/ambient music from open source sources (see README.md)
+2. Rename the file to "background-music.mp3"
+3. Replace this .txt file with the actual .mp3 file
+
+Recommended sources:
+- Incompetech (Kevin MacLeod): https://incompetech.com/
+- Free Music Archive: https://freemusicarchive.org/
+- OpenGameArt: https://opengameart.org/
+
+Look for tracks with "ambient", "chill", "relaxing", or "peaceful" in the title.
