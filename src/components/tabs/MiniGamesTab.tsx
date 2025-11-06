@@ -5,8 +5,10 @@ import SnakeGame from '../games/SnakeGame';
 import FeedingFrenzyGame from '../games/FeedingFrenzyGame';
 import CatchGame from '../games/CatchGame';
 import PuzzleGame from '../games/PuzzleGame';
-
 import PetWordPuzzleGame from '../games/PetWordPuzzleGame';
+import RockPaperScissorsGame from '../games/RockPaperScissorsGame';
+import TicTacToeGame from '../games/TicTacToeGame';
+import HangmanGame from '../games/HangmanGame';
 
 const MiniGamesTab: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -61,6 +63,30 @@ const MiniGamesTab: React.FC = () => {
       cost: 20,
       description: 'Shoot falling fruits with your pet!',
       component: CatchGame
+    },
+    {
+      id: 'rock-paper-scissors',
+      name: 'Rock Paper Scissors',
+      icon: '✂️',
+      cost: 12,
+      description: 'Challenge your pet to Rock Paper Scissors!',
+      component: RockPaperScissorsGame
+    },
+    {
+      id: 'tic-tac-toe',
+      name: 'Tic Tac Toe',
+      icon: '⭕',
+      cost: 14,
+      description: 'Play Tic Tac Toe against your pet!',
+      component: TicTacToeGame
+    },
+    {
+      id: 'hangman',
+      name: 'Hangman',
+      icon: '🪢',
+      cost: 13,
+      description: 'Guess letters to save your pet from hanging!',
+      component: HangmanGame
     }
   ];
 
