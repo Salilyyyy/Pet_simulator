@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store';
+import { soundManager } from '../../utils/sounds';
 
 interface FallingFood {
   id: number;
@@ -40,6 +41,7 @@ const FeedingFrenzyGame: React.FC = () => {
     setLives(3);
     setCatcherPosition(50);
     setFallingFoods([]);
+    soundManager.playGameStart();
   };
 
   // Mouse/touch movement handler
@@ -86,6 +88,7 @@ const FeedingFrenzyGame: React.FC = () => {
         food.x <= catcherX + CATCHER_WIDTH
       ) {
         setScore(prev => prev + 10);
+        soundManager.playMatchSuccess(); // Food caught sound
         return { ...food, caught: true };
       }
 
@@ -104,6 +107,7 @@ const FeedingFrenzyGame: React.FC = () => {
           }
           return Math.max(0, newLives); // Ensure lives don't go below 0
         });
+        soundManager.playMatchFailure(); // Food missed sound
         return { ...food, caught: true }; // Remove from screen
       }
 

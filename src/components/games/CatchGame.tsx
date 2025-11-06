@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store';
+import { soundManager } from '../../utils/sounds';
 
 interface FallingFruit {
   id: number;
@@ -53,6 +54,7 @@ const CatchGame: React.FC = () => {
     setPetPosition(200);
     setFallingFruits([]);
     setLaserBeams([]);
+    soundManager.playGameStart();
   };
 
   // Mouse movement handler for pet
@@ -103,6 +105,7 @@ const CatchGame: React.FC = () => {
           }
           return Math.max(0, newLives);
         });
+        soundManager.playMatchFailure(); // Fruit missed sound
         return { ...fruit, hit: true };
       }
 
@@ -151,6 +154,8 @@ const CatchGame: React.FC = () => {
           // Give points based on fruit type
           const points = fruit.type === '🍎' ? 10 : fruit.type === '🍌' ? 15 : fruit.type === '🍇' ? 20 : 25;
           setScore(prev => prev + points);
+
+          soundManager.playMatchSuccess(); // Fruit hit sound
 
           return { ...fruit, hit: true };
         }
@@ -211,6 +216,11 @@ const CatchGame: React.FC = () => {
       };
 
       setLaserBeams(prev => [...prev, newBeam]);
+
+      // Play laser sound occasionally to avoid too much noise
+      if (Math.random() < 0.3) { // 30% chance to play sound
+        soundManager.playTileSelect(); // Use tile select sound as laser sound
+      }
     }, 50); // Shoot every 50ms for maximum continuity
 
     return () => clearInterval(shootInterval);

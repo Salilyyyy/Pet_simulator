@@ -4,6 +4,7 @@ import { useGameStore } from './store';
 import PetSelectionScreen from './components/PetSelectionScreen';
 import GameScreen from './components/GameScreen';
 import BackgroundAnimations from './components/BackgroundAnimations';
+import { soundManager } from './utils/sounds';
 
 function App() {
   const { currentScreen, currentPet, checkAchievementsOnly, updatePet } = useGameStore();
@@ -30,6 +31,22 @@ function App() {
       return () => clearInterval(interval);
     }
   }, [currentPet, currentScreen, updatePet]);
+
+  // Background music control
+  useEffect(() => {
+    if (currentScreen === 'game' && currentPet) {
+      // Start background music when entering game
+      soundManager.startBackgroundMusic();
+    } else if (currentScreen === 'selection') {
+      // Stop background music when going back to selection
+      soundManager.stopBackgroundMusic();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      soundManager.stopBackgroundMusic();
+    };
+  }, [currentScreen, currentPet]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-purple-900 to-slate-900 flex items-center justify-center p-4 font-poppins overflow-hidden relative">

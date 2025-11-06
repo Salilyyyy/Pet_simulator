@@ -22,21 +22,18 @@ const PikachuMatchGame: React.FC = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes
 
-  const BOARD_SIZE = 8; // 8x8 grid
+  const BOARD_SIZE = 8;
   const TOTAL_TILES = BOARD_SIZE * BOARD_SIZE;
 
-  // Initialize game board
   const initializeBoard = useCallback(() => {
     const tiles: GameTile[] = [];
     const petKeys = Object.keys(PET_TYPES);
     let tileId = 0;
 
-    // Create pairs of each pet type
     for (let i = 0; i < TOTAL_TILES / 2; i++) {
       const petType = petKeys[i % petKeys.length];
       const petData = PET_TYPES[petType];
 
-      // Add two tiles of the same pet
       tiles.push({
         id: tileId++,
         petType,
@@ -53,7 +50,6 @@ const PikachuMatchGame: React.FC = () => {
       });
     }
 
-    // Shuffle the tiles
     for (let i = tiles.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
@@ -67,24 +63,20 @@ const PikachuMatchGame: React.FC = () => {
     setTimeLeft(120);
   }, []);
 
-  // Start game
   const startGame = () => {
     setGameStarted(true);
     initializeBoard();
     soundManager.playGameStart();
   };
 
-  // Check if path exists between two tiles (Pikachu-style logic)
   const canConnectTiles = (tile1: GameTile, tile2: GameTile): boolean => {
     if (tile1.id === tile2.id) return false;
 
-    // Get positions
     const pos1 = getTilePosition(tile1.id);
     const pos2 = getTilePosition(tile2.id);
 
     if (!pos1 || !pos2) return false;
 
-    // Check direct horizontal path
     if (pos1.row === pos2.row) {
       const startCol = Math.min(pos1.col, pos2.col);
       const endCol = Math.max(pos1.col, pos2.col);
@@ -100,7 +92,6 @@ const PikachuMatchGame: React.FC = () => {
       if (clear) return true;
     }
 
-    // Check direct vertical path
     if (pos1.col === pos2.col) {
       const startRow = Math.min(pos1.row, pos2.row);
       const endRow = Math.max(pos1.row, pos2.row);
@@ -116,12 +107,9 @@ const PikachuMatchGame: React.FC = () => {
       if (clear) return true;
     }
 
-    // Check L-shaped path (2-direction change)
-    // Try going horizontally then vertically
     for (let col = 0; col < BOARD_SIZE; col++) {
       if (col === pos1.col || col === pos2.col) continue;
 
-      // Check if corner tiles are empty
       const corner1Id = pos1.row * BOARD_SIZE + col;
       const corner2Id = pos2.row * BOARD_SIZE + col;
 
@@ -129,11 +117,9 @@ const PikachuMatchGame: React.FC = () => {
       const corner2Tile = gameBoard.find(t => t.id === corner2Id);
 
       if ((corner1Tile?.isMatched !== false) && (corner2Tile?.isMatched !== false)) {
-        // Check horizontal paths to corners
         const h1Clear = checkHorizontalPath(pos1.row, pos1.col, col);
         const h2Clear = checkHorizontalPath(pos2.row, pos2.col, col);
 
-        // Check vertical paths from corners
         const v1Clear = checkVerticalPath(pos1.row, col, pos2.row);
         const v2Clear = checkVerticalPath(pos2.row, col, pos1.row);
 
@@ -143,11 +129,9 @@ const PikachuMatchGame: React.FC = () => {
       }
     }
 
-    // Try going vertically then horizontally
     for (let row = 0; row < BOARD_SIZE; row++) {
       if (row === pos1.row || row === pos2.row) continue;
 
-      // Check if corner tiles are empty
       const corner1Id = row * BOARD_SIZE + pos1.col;
       const corner2Id = row * BOARD_SIZE + pos2.col;
 
@@ -155,11 +139,9 @@ const PikachuMatchGame: React.FC = () => {
       const corner2Tile = gameBoard.find(t => t.id === corner2Id);
 
       if ((corner1Tile?.isMatched !== false) && (corner2Tile?.isMatched !== false)) {
-        // Check vertical paths to corners
         const v1Clear = checkVerticalPath(pos1.row, pos1.col, row);
         const v2Clear = checkVerticalPath(pos2.row, pos2.col, row);
 
-        // Check horizontal paths from corners
         const h1Clear = checkHorizontalPath(row, pos1.col, pos2.col);
         const h2Clear = checkHorizontalPath(row, pos2.col, pos1.col);
 
@@ -172,7 +154,6 @@ const PikachuMatchGame: React.FC = () => {
     return false;
   };
 
-  // Helper function to get tile position
   const getTilePosition = (tileId: number) => {
     const index = gameBoard.findIndex(t => t.id === tileId);
     if (index === -1) return null;
@@ -182,7 +163,6 @@ const PikachuMatchGame: React.FC = () => {
     };
   };
 
-  // Helper function to check horizontal path
   const checkHorizontalPath = (row: number, startCol: number, endCol: number): boolean => {
     const minCol = Math.min(startCol, endCol);
     const maxCol = Math.max(startCol, endCol);
@@ -197,7 +177,6 @@ const PikachuMatchGame: React.FC = () => {
     return true;
   };
 
-  // Helper function to check vertical path
   const checkVerticalPath = (startRow: number, col: number, endRow: number): boolean => {
     const minRow = Math.min(startRow, endRow);
     const maxRow = Math.max(startRow, endRow);
@@ -212,7 +191,6 @@ const PikachuMatchGame: React.FC = () => {
     return true;
   };
 
-  // Handle tile click
   const handleTileClick = (tileId: number) => {
     if (!gameStarted || gameCompleted) return;
 
@@ -224,7 +202,6 @@ const PikachuMatchGame: React.FC = () => {
     const newSelectedTiles = [...selectedTiles, tileId];
     setSelectedTiles(newSelectedTiles);
 
-    // Update tile selection state
     setGameBoard(prev => prev.map(t =>
       t.id === tileId ? { ...t, isSelected: true } : t
     ));
@@ -237,7 +214,6 @@ const PikachuMatchGame: React.FC = () => {
       const secondTile = gameBoard.find(t => t.id === secondId);
 
       if (firstTile && secondTile && firstTile.petType === secondTile.petType && canConnectTiles(firstTile, secondTile)) {
-        // Valid match found!
         setTimeout(() => {
           soundManager.playMatchSuccess();
           setGameBoard(prev => prev.map(t =>
@@ -248,7 +224,6 @@ const PikachuMatchGame: React.FC = () => {
           setSelectedTiles([]);
           setScore(prev => prev + 10);
 
-          // Check if game is completed
           const remainingTiles = gameBoard.filter(t => !t.isMatched && t.id !== firstId && t.id !== secondId);
           if (remainingTiles.length <= 2) {
             setGameCompleted(true);
@@ -257,7 +232,6 @@ const PikachuMatchGame: React.FC = () => {
           }
         }, 500);
       } else {
-        // No valid match, deselect after delay
         setTimeout(() => {
           soundManager.playMatchFailure();
           setGameBoard(prev => prev.map(t => ({ ...t, isSelected: false })));
@@ -267,7 +241,6 @@ const PikachuMatchGame: React.FC = () => {
     }
   };
 
-  // Timer effect
   useEffect(() => {
     if (!gameStarted || gameCompleted) return;
 
@@ -278,7 +251,6 @@ const PikachuMatchGame: React.FC = () => {
           setMessage(`⏰ Time's up! Final score: ${score}`);
           return 0;
         }
-        // Play warning sound when 10 seconds left
         if (prev === 11) {
           soundManager.playTimerWarning();
         }
@@ -289,7 +261,6 @@ const PikachuMatchGame: React.FC = () => {
     return () => clearInterval(timer);
   }, [gameStarted, gameCompleted, score, setMessage]);
 
-  // Format time
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;

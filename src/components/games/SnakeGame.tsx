@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store';
+import { soundManager } from '../../utils/sounds';
 
 interface Position {
   x: number;
@@ -34,7 +35,6 @@ const SnakeGame: React.FC = () => {
     isPlaying: false
   });
 
-  // Generate random food position
   const generateFood = useCallback((snake: Position[]): Position => {
     let newFood: Position;
     do {
@@ -46,17 +46,13 @@ const SnakeGame: React.FC = () => {
     return newFood;
   }, []);
 
-  // Check collision with walls or self
   const checkCollision = useCallback((head: Position, snake: Position[]): boolean => {
-    // Wall collision
     if (head.x < 0 || head.x >= BOARD_WIDTH || head.y < 0 || head.y >= BOARD_HEIGHT) {
       return true;
     }
-    // Self collision
     return snake.some(segment => segment.x === head.x && segment.y === head.y);
   }, []);
 
-  // Move snake
   const moveSnake = useCallback(() => {
     setGameState(prevState => {
       if (prevState.gameOver || !prevState.isPlaying) return prevState;
@@ -64,11 +60,9 @@ const SnakeGame: React.FC = () => {
       const newSnake = [...prevState.snake];
       const head = { ...newSnake[0] };
 
-      // Move head
       head.x += prevState.direction.x;
       head.y += prevState.direction.y;
 
-      // Check collision
       if (checkCollision(head, newSnake)) {
         return {
           ...prevState,
@@ -79,15 +73,15 @@ const SnakeGame: React.FC = () => {
 
       newSnake.unshift(head);
 
-      // Check food collision
       let newFood = prevState.food;
       let newScore = prevState.score;
 
       if (head.x === prevState.food.x && head.y === prevState.food.y) {
         newScore += 10;
         newFood = generateFood(newSnake);
+        setTimeout(() => soundManager.playMatchSuccess(), 50);
       } else {
-        newSnake.pop(); // Remove tail if no food eaten
+        newSnake.pop();
       }
 
       return {
@@ -99,10 +93,8 @@ const SnakeGame: React.FC = () => {
     });
   }, [checkCollision, generateFood]);
 
-  // Change direction
   const changeDirection = useCallback((newDirection: Position) => {
     setGameState(prevState => {
-      // Prevent reverse direction
       if (
         (newDirection.x === -prevState.direction.x && newDirection.y === -prevState.direction.y) ||
         (newDirection.x === prevState.direction.x && newDirection.y === prevState.direction.y)
@@ -116,7 +108,6 @@ const SnakeGame: React.FC = () => {
     });
   }, []);
 
-  // Handle keyboard input
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (!gameState.isPlaying) return;
@@ -153,7 +144,6 @@ const SnakeGame: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [gameState.isPlaying, changeDirection]);
 
-  // Game loop
   useEffect(() => {
     if (!gameState.isPlaying || gameState.gameOver) return;
 
@@ -161,7 +151,6 @@ const SnakeGame: React.FC = () => {
     return () => clearInterval(gameInterval);
   }, [gameState.isPlaying, gameState.gameOver, moveSnake]);
 
-  // Start game
   const startGame = useCallback(() => {
     const initialFood = generateFood(INITIAL_SNAKE);
     setGameState({
@@ -172,9 +161,9 @@ const SnakeGame: React.FC = () => {
       score: 0,
       isPlaying: true
     });
+    soundManager.playGameStart();
   }, [generateFood]);
 
-  // Reset game
   const resetGame = useCallback(() => {
     setGameState({
       snake: INITIAL_SNAKE,
@@ -186,15 +175,14 @@ const SnakeGame: React.FC = () => {
     });
   }, []);
 
-  // Handle game over
   useEffect(() => {
     if (gameState.gameOver) {
+      soundManager.playMatchFailure();
       completeMiniGame('snake-game', gameState.score, Math.floor(gameState.score / 10));
       setMessage(`🐍 Game Over! Final Score: ${gameState.score}`);
     }
   }, [gameState.gameOver, gameState.score, completeMiniGame, setMessage]);
 
-  // Get pet emoji for snake head
   const snakeHeadEmoji = currentPet?.typeData.emoji || '🐍';
 
   return (
