@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store';
 import { PET_TYPES } from '../../constants';
+import { soundManager } from '../../utils/sounds';
 
 interface GameTile {
   id: number;
@@ -70,6 +71,7 @@ const PikachuMatchGame: React.FC = () => {
   const startGame = () => {
     setGameStarted(true);
     initializeBoard();
+    soundManager.playGameStart();
   };
 
   // Check if path exists between two tiles (Pikachu-style logic)
@@ -217,6 +219,8 @@ const PikachuMatchGame: React.FC = () => {
     const tile = gameBoard.find(t => t.id === tileId);
     if (!tile || tile.isMatched || tile.isSelected) return;
 
+    soundManager.playTileSelect();
+
     const newSelectedTiles = [...selectedTiles, tileId];
     setSelectedTiles(newSelectedTiles);
 
@@ -235,6 +239,7 @@ const PikachuMatchGame: React.FC = () => {
       if (firstTile && secondTile && firstTile.petType === secondTile.petType && canConnectTiles(firstTile, secondTile)) {
         // Valid match found!
         setTimeout(() => {
+          soundManager.playMatchSuccess();
           setGameBoard(prev => prev.map(t =>
             t.id === firstId || t.id === secondId
               ? { ...t, isMatched: true, isSelected: false }
@@ -247,12 +252,14 @@ const PikachuMatchGame: React.FC = () => {
           const remainingTiles = gameBoard.filter(t => !t.isMatched && t.id !== firstId && t.id !== secondId);
           if (remainingTiles.length <= 2) {
             setGameCompleted(true);
+            soundManager.playGameComplete();
             completeMiniGame('pikachu-match', score + 10, moves + 1);
           }
         }, 500);
       } else {
         // No valid match, deselect after delay
         setTimeout(() => {
+          soundManager.playMatchFailure();
           setGameBoard(prev => prev.map(t => ({ ...t, isSelected: false })));
           setSelectedTiles([]);
         }, 1000);
@@ -270,6 +277,10 @@ const PikachuMatchGame: React.FC = () => {
           setGameCompleted(true);
           setMessage(`⏰ Time's up! Final score: ${score}`);
           return 0;
+        }
+        // Play warning sound when 10 seconds left
+        if (prev === 11) {
+          soundManager.playTimerWarning();
         }
         return prev - 1;
       });
