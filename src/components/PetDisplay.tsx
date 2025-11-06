@@ -41,132 +41,116 @@ const PetDisplay: React.FC = () => {
     >
       {/* Pet Container */}
       <div className="relative mb-20">
-        {/* Pet House */}
+        {/* Pet Avatar */}
         <motion.div
-          className="relative w-80 h-60 bg-gradient-to-b from-amber-800 to-amber-900 rounded-2xl shadow-2xl border-4 border-amber-700 overflow-visible"
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300 }}
+          className="relative w-40 h-40 rounded-full flex items-center justify-center shadow-2xl cursor-pointer mx-auto"
+          style={{
+            backgroundColor: currentPet.customization?.color || '#FFD700',
+            transform: `scale(${currentPet.customization?.size || 1})`
+          }}
+          animate={{
+            y: [0, -5, 0],
+            rotate: [0, 2, -2, 0]
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          whileHover={{ scale: (currentPet.customization?.size || 1) * 1.1 }}
         >
-          {/* House Background */}
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-12 border-transparent border-b-red-600" />
-            <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-6 border-r-6 border-b-9 border-transparent border-b-red-800" />
-            <div className="absolute top-8 right-8 w-6 h-8 bg-blue-400 rounded opacity-60" />
-            <div className="absolute top-8 left-8 w-6 h-8 bg-blue-400 rounded opacity-60" />
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-12 h-16 bg-amber-900 rounded-t" />
-          </div>
-
-          {/* Pet */}
-          <motion.div
-            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full flex items-center justify-center shadow-lg cursor-pointer"
+          <motion.span
+            className="text-7xl"
             style={{
-              backgroundColor: currentPet.customization?.color || '#FFD700',
+              filter: `hue-rotate(${currentPet.customization?.color ? '0deg' : '0deg'}) brightness(1.2)`,
               transform: `scale(${currentPet.customization?.size || 1})`
             }}
             animate={{
-              y: [0, -5, 0],
-              rotate: [0, 2, -2, 0]
+              scale: [1, 1.05, 1].map(s => s * (currentPet.customization?.size || 1)),
+              rotate: [0, 5, -5, 0]
             }}
             transition={{
-              duration: 4,
+              duration: 3,
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            whileHover={{ scale: (currentPet.customization?.size || 1) * 1.1 }}
           >
-            <motion.span
-              className="text-6xl"
-              style={{
-                filter: `hue-rotate(${currentPet.customization?.color ? '0deg' : '0deg'}) brightness(1.2)`,
-                transform: `scale(${currentPet.customization?.size || 1})` // Scale with container
-              }}
-              animate={{
-                scale: [1, 1.05, 1].map(s => s * (currentPet.customization?.size || 1)),
-                rotate: [0, 5, -5, 0]
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              {currentPet.typeData.emoji}
-            </motion.span>
+            {currentPet.typeData.emoji}
+          </motion.span>
 
-            {/* Accessory */}
-            {currentPet.customization?.accessory && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 text-2xl z-10 drop-shadow-lg">
-                {currentPet.customization.accessory}
-              </div>
-            )}
-
-            {/* Pet Sparkles */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none"
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 bg-yellow-300 rounded-full"
-                  style={{
-                    top: `${20 + i * 20}%`,
-                    left: `${30 + i * 20}%`,
-                  }}
-                  animate={{
-                    scale: [0, 1, 0],
-                    opacity: [0, 1, 0]
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    delay: i * 0.3
-                  }}
-                />
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* Level Progress Bar */}
-          <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-64 space-y-1">
-            {/* Level Indicator */}
-            <div className="flex items-center justify-center">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                ⭐ Level {currentPet.level}
-              </div>
+          {/* Accessory */}
+          {currentPet.customization?.accessory && (
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-3xl z-10 drop-shadow-lg">
+              {currentPet.customization.accessory}
             </div>
+          )}
 
-            {/* Progress Bar */}
-            <div className="h-4 bg-black/20 rounded-full overflow-hidden backdrop-blur-sm border border-white/10">
+          {/* Pet Sparkles */}
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            {[...Array(3)].map((_, i) => (
               <motion.div
-                className="h-full bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rounded-full relative"
+                key={i}
+                className="absolute w-2 h-2 bg-yellow-300 rounded-full"
                 style={{
-                  width: `${(currentPet.experience / (currentPet.level * 100)) * 100}%`
+                  top: `${20 + i * 20}%`,
+                  left: `${30 + i * 20}%`,
                 }}
-                initial={{ width: 0 }}
                 animate={{
-                  width: `${(currentPet.experience / (currentPet.level * 100)) * 100}%`
+                  scale: [0, 1, 0],
+                  opacity: [0, 1, 0]
                 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-white text-xs font-bold drop-shadow-sm">
-                    {currentPet.experience}/{currentPet.level * 100} XP
-                  </span>
-                </div>
-              </motion.div>
-            </div>
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: i * 0.3
+                }}
+              />
+            ))}
+          </motion.div>
+        </motion.div>
 
-            {/* Next Level Info */}
-            <div className="text-center">
-              <span className="text-white text-xs opacity-80">
-                {currentPet.level * 100 - currentPet.experience} XP to Level {currentPet.level + 1}
-              </span>
+        {/* Level Progress Bar */}
+        <div className="mt-8 w-64 mx-auto space-y-1">
+          {/* Level Indicator */}
+          <div className="flex items-center justify-center">
+            <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              ⭐ Level {currentPet.level}
             </div>
           </div>
-        </motion.div>
+
+          {/* Progress Bar */}
+          <div className="h-4 bg-black/20 rounded-full overflow-hidden backdrop-blur-sm border border-white/10">
+            <motion.div
+              className="h-full bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rounded-full relative"
+              style={{
+                width: `${(currentPet.experience / (currentPet.level * 100)) * 100}%`
+              }}
+              initial={{ width: 0 }}
+              animate={{
+                width: `${(currentPet.experience / (currentPet.level * 100)) * 100}%`
+              }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-white text-xs font-bold drop-shadow-sm">
+                  {currentPet.experience}/{currentPet.level * 100} XP
+                </span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Next Level Info */}
+          <div className="text-center">
+            <span className="text-white text-xs opacity-80">
+              {currentPet.level * 100 - currentPet.experience} XP to Level {currentPet.level + 1}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Pet Info Panel */}
