@@ -34,17 +34,54 @@ function App() {
 
   // Background music control
   useEffect(() => {
-    if (currentScreen === 'game' && currentPet) {
-      // Start background music when entering game
-      soundManager.startBackgroundMusic();
-    } else if (currentScreen === 'selection') {
-      // Stop background music when going back to selection
-      soundManager.stopBackgroundMusic();
-    }
+    const startMusic = async () => {
+      if (currentScreen === 'game' && currentPet) {
+        try {
+          // Try to start background music when entering game
+          await soundManager.startBackgroundMusic();
+        } catch (error) {
+          console.log('Background music needs user interaction to start');
+        }
+      } else if (currentScreen === 'selection') {
+        // Stop background music when going back to selection
+        soundManager.stopBackgroundMusic();
+      }
+    };
+
+    startMusic();
 
     // Cleanup on unmount
     return () => {
       soundManager.stopBackgroundMusic();
+    };
+  }, [currentScreen, currentPet]);
+
+  // Auto-start music on first user interaction
+  useEffect(() => {
+    const handleFirstInteraction = async () => {
+      if (currentScreen === 'game' && currentPet && !soundManager.isBackgroundMusicPlaying()) {
+        try {
+          await soundManager.startBackgroundMusic();
+        } catch (error) {
+          console.log('Failed to start background music on interaction');
+        }
+      }
+      // Remove listeners after first interaction
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    if (currentScreen === 'game' && currentPet) {
+      document.addEventListener('click', handleFirstInteraction);
+      document.addEventListener('keydown', handleFirstInteraction);
+      document.addEventListener('touchstart', handleFirstInteraction);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
     };
   }, [currentScreen, currentPet]);
 

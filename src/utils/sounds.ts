@@ -98,7 +98,7 @@ class SoundManager {
     setTimeout(() => this.createBeep(1000, 0.1, 'square'), 300);
   }
 
-  startBackgroundMusic(): void {
+  async startBackgroundMusic(): Promise<void> {
     if (this.isBackgroundPlaying) return;
 
     this.backgroundMusic = new Audio('/background-music.mp3');
@@ -110,7 +110,10 @@ class SoundManager {
       this.isBackgroundPlaying = false;
     });
 
-    this.backgroundMusic.play().catch((error) => {
+    try {
+      await this.backgroundMusic.play();
+      this.isBackgroundPlaying = true;
+    } catch (error: any) {
       if (error.name === 'NotAllowedError') {
         console.log('Background music requires user interaction to start');
       } else if (error.name === 'NotSupportedError') {
@@ -119,9 +122,8 @@ class SoundManager {
         console.log('Error playing background music:', error);
       }
       this.isBackgroundPlaying = false;
-    });
-
-    this.isBackgroundPlaying = true;
+      throw error;
+    }
   }
 
   stopBackgroundMusic(): void {

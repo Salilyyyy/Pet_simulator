@@ -1,42 +1,41 @@
-# Background Music
+# Background Music Setup
 
-This directory contains background music files for the pet simulator.
+The pet simulator now supports automatic background music playback!
 
-## Adding Background Music
+## Quick Setup (3 steps):
 
-To add chill background music to the pet simulator, download open source music from one of these sources:
+1. **Download free music** from: https://incompetech.com/ (Kevin MacLeod)
+   - Search for "Ambient" or "Peaceful" tracks
+   - Example: "Floating Cities", "Peaceful Piano", "Relaxing Music"
 
-### Recommended Open Source Music Sources:
+2. **Save as MP3**:
+   - Download any chill/ambient track
+   - Convert to MP3 if needed
+   - Keep file size under 10MB
 
-1. **Incompetech (Kevin MacLeod)** - Free for commercial use
-   - Website: https://incompetech.com/
-   - Look for ambient/chill tracks like "Relaxing Music", "Peaceful Piano", etc.
+3. **Place in this folder**:
+   - Rename file to: `background-music.mp3`
+   - Replace the existing `background-music.mp3.txt` file
+   - Music will auto-play when you enter the pet care screen!
 
-2. **Free Music Archive (FMA)**
-   - Website: https://freemusicarchive.org/
-   - Search for "ambient", "chill", "relaxing" with Creative Commons licenses
+## How Auto-Play Works:
 
-3. **OpenGameArt**
-   - Website: https://opengameart.org/
-   - Search for background music in the audio section
+- ✅ **Automatic**: Starts when entering pet care screen
+- ✅ **Interactive**: Plays on first click/keyboard press if needed
+- ✅ **Looping**: Music repeats continuously
+- ✅ **Volume**: Set to comfortable background level (30%)
+- ✅ **Stop**: Automatically stops when leaving pet care
 
-4. **YouTube Audio Library** (Free with attribution)
-   - Search for royalty-free ambient music
+## Alternative Sources:
 
-### Instructions:
+- **Free Music Archive**: https://freemusicarchive.org/ (search "ambient")
+- **YouTube Audio Library**: Search "royalty free ambient music"
+- **OpenGameArt**: https://opengameart.org/art-search-advanced?keys=&field_art_type_tid%5B%5D=13
 
-1. Download a chill/ambient MP3 file (recommended length: 2-5 minutes, will loop)
-2. Rename it to `background-music.mp3`
-3. Place it in this `public/` directory
-4. The game will automatically play it when entering the pet care screen
+## Troubleshooting:
 
-### Recommended Music Characteristics:
-- Chill/ambient style
-- No vocals preferred
-- Soft volume (will be adjusted in-game)
-- Looping friendly (no abrupt endings)
+- **Not playing?** Check browser console for error messages
+- **File not found?** Make sure it's named exactly `background-music.mp3`
+- **Browser blocks?** Try clicking anywhere first, then music should start
 
-### File Format:
-- MP3 format preferred
-- Keep file size reasonable (< 10MB)
-- 128kbps or higher quality
+The music creates a relaxing atmosphere for pet care activities! 🎵

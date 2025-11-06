@@ -1,14 +1,12 @@
-PLACEHOLDER FILE - Replace with actual MP3
+⚠️  REPLACE THIS FILE WITH MUSIC! ⚠️
 
-This is a placeholder file. To add background music:
+To enable automatic background music:
 
-1. Download chill/ambient music from open source sources (see README.md)
-2. Rename the file to "background-music.mp3"
-3. Replace this .txt file with the actual .mp3 file
+1. Visit: https://incompetech.com/
+2. Download any "Ambient" or "Peaceful" track (MP3)
+3. Rename downloaded file to: background-music.mp3
+4. Delete this .txt file and place the .mp3 file here
 
-Recommended sources:
-- Incompetech (Kevin MacLeod): https://incompetech.com/
-- Free Music Archive: https://freemusicarchive.org/
-- OpenGameArt: https://opengameart.org/
+The music will then auto-play when you enter the pet care screen!
 
-Look for tracks with "ambient", "chill", "relaxing", or "peaceful" in the title.
+🎵 Enjoy chill background music while caring for your pets! 🎵
