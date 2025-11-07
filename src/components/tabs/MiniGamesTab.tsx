@@ -10,6 +10,10 @@ import RockPaperScissorsGame from '../games/RockPaperScissorsGame';
 import TicTacToeGame from '../games/TicTacToeGame';
 import HangmanGame from '../games/HangmanGame';
 import BreakoutGame from '../games/BreakoutGame';
+import SlitherGame from '../games/SlitherGame';
+import SudokuGame from '../games/SudokuGame';
+import MillionaireGame from '../games/MillionaireGame';
+import FruitNinjaGame from '../games/FruitNinjaGame';
 
 const MiniGamesTab: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -96,6 +100,41 @@ const MiniGamesTab: React.FC = () => {
       cost: 17,
       description: 'Break all bricks with your ball!',
       component: BreakoutGame
+    },
+    {
+      id: 'slither-game',
+      name: 'Slither.io',
+      icon: '🐍',
+      cost: 22,
+      description: 'Grow your worm by eating pellets and other players!',
+      component: SlitherGame
+    },
+    {
+      id: 'sudoku',
+      name: 'Pet Sudoku',
+      icon: '🧩',
+      cost: 21,
+      description: 'Fill the grid with numbers 1-9. No repeats allowed!',
+      component: SudokuGame,
+      featured: true
+    },
+    {
+      id: 'millionaire',
+      name: 'Ai Là Triệu Phú',
+      icon: '💰',
+      cost: 28,
+      description: 'Answer questions to win big prizes!',
+      component: MillionaireGame,
+      featured: true
+    },
+    {
+      id: 'fruit-ninja',
+      name: 'Fruit Ninja',
+      icon: '🗡️',
+      cost: 23,
+      description: 'Slice flying fruits with your mouse!',
+      component: FruitNinjaGame,
+      featured: true
     }
   ];
 
