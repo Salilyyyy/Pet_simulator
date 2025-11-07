@@ -14,6 +14,7 @@ import SlitherGame from '../games/SlitherGame';
 import SudokuGame from '../games/SudokuGame';
 import MillionaireGame from '../games/MillionaireGame';
 import FruitNinjaGame from '../games/FruitNinjaGame';
+import GoldMiningGame from '../games/GoldMiningGame';
 
 const MiniGamesTab: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -134,6 +135,15 @@ const MiniGamesTab: React.FC = () => {
       cost: 23,
       description: 'Slice flying fruits with your mouse!',
       component: FruitNinjaGame,
+      featured: true
+    },
+    {
+      id: 'gold-mining',
+      name: 'Gold Mining',
+      icon: '⛏️',
+      cost: 19,
+      description: 'Dig for gold nuggets in this exciting mining adventure!',
+      component: GoldMiningGame,
       featured: true
     }
   ];
