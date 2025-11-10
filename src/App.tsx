@@ -21,12 +21,12 @@ function App() {
     }
   }, [currentPet, currentScreen, checkAchievementsOnly]);
 
-  // Update pet stats periodically (every 5 seconds)
+  // Update pet stats periodically (every 10 seconds, throttled)
   useEffect(() => {
     if (currentPet && currentScreen === 'game') {
       const interval = setInterval(() => {
         updatePet();
-      }, 5000); // 5 seconds
+      }, 10000); // 10 seconds
 
       return () => clearInterval(interval);
     }

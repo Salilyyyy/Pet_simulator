@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy, memo } from 'react';
 import { motion } from 'framer-motion';
-import PikachuMatchGame from '../games/PikachuMatchGame';
-import SnakeGame from '../games/SnakeGame';
-import FeedingFrenzyGame from '../games/FeedingFrenzyGame';
-import CatchGame from '../games/CatchGame';
-import PuzzleGame from '../games/PuzzleGame';
-import PetWordPuzzleGame from '../games/PetWordPuzzleGame';
-import RockPaperScissorsGame from '../games/RockPaperScissorsGame';
-import TicTacToeGame from '../games/TicTacToeGame';
-import HangmanGame from '../games/HangmanGame';
-import BreakoutGame from '../games/BreakoutGame';
-import SlitherGame from '../games/SlitherGame';
-import SudokuGame from '../games/SudokuGame';
-import MillionaireGame from '../games/MillionaireGame';
-import FruitNinjaGame from '../games/FruitNinjaGame';
-import GoldMiningGame from '../games/GoldMiningGame';
+
+// Lazy load all game components
+const PikachuMatchGame = lazy(() => import('../games/PikachuMatchGame'));
+const SnakeGame = lazy(() => import('../games/SnakeGame'));
+const FeedingFrenzyGame = lazy(() => import('../games/FeedingFrenzyGame'));
+const CatchGame = lazy(() => import('../games/CatchGame'));
+const PuzzleGame = lazy(() => import('../games/PuzzleGame'));
+const PetWordPuzzleGame = lazy(() => import('../games/PetWordPuzzleGame'));
+const RockPaperScissorsGame = lazy(() => import('../games/RockPaperScissorsGame'));
+const TicTacToeGame = lazy(() => import('../games/TicTacToeGame'));
+const HangmanGame = lazy(() => import('../games/HangmanGame'));
+const BreakoutGame = lazy(() => import('../games/BreakoutGame'));
+const SlitherGame = lazy(() => import('../games/SlitherGame'));
+const SudokuGame = lazy(() => import('../games/SudokuGame'));
+const MillionaireGame = lazy(() => import('../games/MillionaireGame'));
+const FruitNinjaGame = lazy(() => import('../games/FruitNinjaGame'));
+const GoldMiningGame = lazy(() => import('../games/GoldMiningGame'));
 
 const MiniGamesTab: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -178,7 +180,22 @@ const MiniGamesTab: React.FC = () => {
             ← Back to Games
           </motion.button>
         </div>
-        {GameComponent && <GameComponent />}
+        {GameComponent && (
+          <Suspense fallback={
+            <motion.div
+              className="flex items-center justify-center p-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                <p className="text-white">Loading game...</p>
+              </div>
+            </motion.div>
+          }>
+            <GameComponent />
+          </Suspense>
+        )}
       </motion.div>
     );
   }
@@ -318,4 +335,4 @@ const MiniGamesTab: React.FC = () => {
   );
 };
 
-export default MiniGamesTab;
+export default memo(MiniGamesTab);

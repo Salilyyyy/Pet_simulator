@@ -9,6 +9,17 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: false, // Disable sourcemaps for production performance
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor chunks for better caching
+          vendor: ['react', 'react-dom'],
+          framer: ['framer-motion'],
+          zustand: ['zustand']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 600 // Increase warning limit
   }
 })

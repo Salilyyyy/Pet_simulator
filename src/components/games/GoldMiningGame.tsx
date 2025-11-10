@@ -119,30 +119,39 @@ const GoldMiningGame: React.FC = () => {
     }));
   }, [gameState.isPlaying, gameState.hookExtended, gameState.hookReturning]);
 
-  // Hook swinging animation
+  // Hook swinging animation using requestAnimationFrame
   useEffect(() => {
     if (!gameState.isPlaying || gameState.hookExtended || gameState.hookReturning) return;
 
-    const swingInterval = setInterval(() => {
-      setGameState(prevState => {
-        let newAngle = prevState.hookAngle + 2;
-        if (newAngle > 90) newAngle = -90;
-        if (newAngle < -90) newAngle = 90;
+    let animationId: number;
+    let lastTime = 0;
 
-        const angleRad = (-newAngle * Math.PI) / 180; // Negate angle for correct direction
-        const hookX = HOOK_BASE_X + Math.sin(angleRad) * prevState.hookLength;
-        const hookY = HOOK_BASE_Y + Math.cos(angleRad) * prevState.hookLength;
+    const animate = (currentTime: number) => {
+      if (currentTime - lastTime >= 50) { // ~20fps for swinging
+        setGameState(prevState => {
+          let newAngle = prevState.hookAngle + 2;
+          if (newAngle > 90) newAngle = -90;
+          if (newAngle < -90) newAngle = 90;
 
-        return {
-          ...prevState,
-          hookAngle: newAngle,
-          hookX,
-          hookY
-        };
-      });
-    }, 50);
+          const angleRad = (-newAngle * Math.PI) / 180;
+          const hookX = HOOK_BASE_X + Math.sin(angleRad) * prevState.hookLength;
+          const hookY = HOOK_BASE_Y + Math.cos(angleRad) * prevState.hookLength;
 
-    return () => clearInterval(swingInterval);
+          return {
+            ...prevState,
+            hookAngle: newAngle,
+            hookX,
+            hookY
+          };
+        });
+        lastTime = currentTime;
+      }
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animationId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationId);
   }, [gameState.isPlaying, gameState.hookExtended, gameState.hookReturning]);
 
   // Update hook position when swinging (not extended)
