@@ -15,7 +15,6 @@ const BreakoutGame = lazy(() => import('../games/BreakoutGame'));
 const SlitherGame = lazy(() => import('../games/SlitherGame'));
 const SudokuGame = lazy(() => import('../games/SudokuGame'));
 const MillionaireGame = lazy(() => import('../games/MillionaireGame'));
-const FruitNinjaGame = lazy(() => import('../games/FruitNinjaGame'));
 const GoldMiningGame = lazy(() => import('../games/GoldMiningGame'));
 
 const MiniGamesTab: React.FC = () => {
@@ -128,15 +127,6 @@ const MiniGamesTab: React.FC = () => {
       cost: 28,
       description: 'Answer questions to win big prizes!',
       component: MillionaireGame,
-      featured: true
-    },
-    {
-      id: 'fruit-ninja',
-      name: 'Fruit Ninja',
-      icon: '🗡️',
-      cost: 23,
-      description: 'Slice flying fruits with your mouse!',
-      component: FruitNinjaGame,
       featured: true
     },
     {
