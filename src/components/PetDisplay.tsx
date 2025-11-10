@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../store';
 
-const PetDisplay: React.FC = () => {
+const PetDisplay: React.FC = memo(() => {
   const { currentPet, switchToPetSelection, setMessage } = useGameStore();
   const [showCustomization, setShowCustomization] = useState(false);
 
   if (!currentPet) return null;
 
-  const handleChangePet = () => {
+  const handleChangePet = useCallback(() => {
     if (confirm('Are you sure you want to change your pet? Your current pet\'s progress will be saved.')) {
       switchToPetSelection();
     }
-  };
+  }, [switchToPetSelection]);
 
   const getMoodEmoji = () => {
     const avgStats = (currentPet.stats.hunger + currentPet.stats.happiness + currentPet.stats.health + currentPet.stats.energy) / 4;
@@ -42,41 +42,22 @@ const PetDisplay: React.FC = () => {
       {/* Pet Container */}
       <div className="relative mb-20">
         {/* Pet Avatar */}
-        <motion.div
-          className="relative w-40 h-40 rounded-full flex items-center justify-center shadow-2xl cursor-pointer mx-auto"
+        <div
+          className="relative w-40 h-40 rounded-full flex items-center justify-center shadow-2xl cursor-pointer mx-auto hover:scale-105 transition-transform duration-300"
           style={{
             backgroundColor: currentPet.customization?.color || '#FFD700',
             transform: `scale(${currentPet.customization?.size || 1})`
           }}
-          animate={{
-            y: [0, -5, 0],
-            rotate: [0, 2, -2, 0]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          whileHover={{ scale: (currentPet.customization?.size || 1) * 1.1 }}
         >
-          <motion.span
+          <span
             className="text-7xl"
             style={{
               filter: `hue-rotate(${currentPet.customization?.color ? '0deg' : '0deg'}) brightness(1.2)`,
               transform: `scale(${currentPet.customization?.size || 1})`
             }}
-            animate={{
-              scale: [1, 1.05, 1].map(s => s * (currentPet.customization?.size || 1)),
-              rotate: [0, 5, -5, 0]
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
           >
             {currentPet.typeData.emoji}
-          </motion.span>
+          </span>
 
           {/* Accessory */}
           {currentPet.customization?.accessory && (
@@ -84,34 +65,7 @@ const PetDisplay: React.FC = () => {
               {currentPet.customization.accessory}
             </div>
           )}
-
-          {/* Pet Sparkles */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-2 h-2 bg-yellow-300 rounded-full"
-                style={{
-                  top: `${20 + i * 20}%`,
-                  left: `${30 + i * 20}%`,
-                }}
-                animate={{
-                  scale: [0, 1, 0],
-                  opacity: [0, 1, 0]
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  delay: i * 0.3
-                }}
-              />
-            ))}
-          </motion.div>
-        </motion.div>
+        </div>
 
         {/* Level Progress Bar */}
         <div className="mt-8 w-64 mx-auto space-y-1">
@@ -395,6 +349,6 @@ const PetDisplay: React.FC = () => {
       </AnimatePresence>
     </motion.div>
   );
-};
+});
 
 export default PetDisplay;

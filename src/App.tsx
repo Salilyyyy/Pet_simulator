@@ -21,12 +21,12 @@ function App() {
     }
   }, [currentPet, currentScreen, checkAchievementsOnly]);
 
-  // Update pet stats periodically (every 10 seconds, throttled)
+  // Update pet stats periodically (every 30 seconds, throttled)
   useEffect(() => {
     if (currentPet && currentScreen === 'game') {
       const interval = setInterval(() => {
         updatePet();
-      }, 10000); // 10 seconds
+      }, 30000); // 30 seconds
 
       return () => clearInterval(interval);
     }
@@ -103,21 +103,7 @@ function App() {
           transition={{ delay: 0.2, duration: 0.5 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent drop-shadow-2xl text-stroke">
-            <motion.span
-              className="inline-block"
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-            >
-              🌟
-            </motion.span>
-            Modern Pet Simulator
-            <motion.span
-              className="inline-block"
-              animate={{ rotate: [0, -10, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-            >
-              🌟
-            </motion.span>
+            🌟 Modern Pet Simulator 🌟
           </h1>
 
           {currentPet && (

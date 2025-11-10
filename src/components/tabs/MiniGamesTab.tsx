@@ -245,40 +245,10 @@ const MiniGamesTab: React.FC = () => {
               </motion.div>
             )}
 
-            {/* Game icon with animation */}
-            <motion.div
-              className="text-6xl mb-4 relative"
-              whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-              transition={{ duration: 0.3 }}
-            >
+            {/* Game icon */}
+            <div className="text-6xl mb-4 relative hover:scale-110 transition-transform duration-300">
               {game.icon}
-              {/* Floating particles */}
-              <motion.div
-                className="absolute inset-0 pointer-events-none"
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                {[...Array(3)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-1 h-1 bg-yellow-300 rounded-full"
-                    style={{
-                      top: `${20 + i * 20}%`,
-                      left: `${30 + i * 20}%`,
-                    }}
-                    animate={{
-                      scale: [0, 1, 0],
-                      opacity: [0, 1, 0]
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      delay: i * 0.3
-                    }}
-                  />
-                ))}
-              </motion.div>
-            </motion.div>
+            </div>
 
             <h4 className="text-xl font-bold text-white mb-2">{game.name}</h4>
             <p className="text-gray-300 mb-4 text-sm">{game.description}</p>
